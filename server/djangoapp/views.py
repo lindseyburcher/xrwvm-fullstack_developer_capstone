@@ -3,10 +3,10 @@
 # from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from .models import CarMake, CarModel
-from django.shortcuts import get_object_or_404, render, redirect
+# from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
-from django.contrib import messages
-from datetime import datetime
+# from django.contrib import messages
+# from datetime import datetime
 from .restapis import get_request, analyze_review_sentiments, post_review
 
 from django.http import JsonResponse
@@ -52,7 +52,7 @@ def logout_request(request):
 
 @csrf_exempt
 def registration(request):
-    context = {}
+    # context = {}
 
     data = json.loads(request.body)
     username = data['userName']
@@ -61,20 +61,22 @@ def registration(request):
     last_name = data['lastName']
     email = data['email']
     username_exist = False
-    email_exist = False
+    # email_exist = False
     try:
         # check if user already exists
         User.objects.get(username=username)
         username_exist = True
-    except:
+    except Exception as err:
         # if not, log as a new user
+        print(f"Unexpected {err=}, {type(err)=}")
         logger.debug("{} is new user".format(username))
 
     # if new user
     if not username_exist:
         # create user in auth_user table
         user = User.objects.create_user(
-            username=username, first_name=first_name, last_name=last_name, password=password, email=email)
+            username=username, first_name=first_name,
+            last_name=last_name, password=password, email=email)
         # login user
         login(request, user)
         data = {"userName": username, "status": "Authenticated"}
@@ -131,7 +133,8 @@ def add_review(request):
         try:
             response = post_review(data)
             return JsonResponse({"status": 200})
-        except:
+        except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
             return JsonResponse({"status": 401, "message": "Error in posting review"})
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
