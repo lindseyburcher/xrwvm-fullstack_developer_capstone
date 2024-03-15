@@ -46,11 +46,11 @@ class CarModel(models.Model):
         ('CROSSOVER', 'Crossover'),
         ('MPV', 'MPV')
     ]
-    type = models.CharField(max_length=10,choices=CAR_TYPES, default='HATCHBACK')
-    year = models.IntegerField(default=2024, 
-                               validators=[MaxValueValidator(2024), 
-                                           MinValueValidator(2015)
-                                          ])
+    type = models.CharField(max_length=10, choices=CAR_TYPES, default='HATCHBACK')
+    year = models.IntegerField(default=2024, validators=
+                               [MaxValueValidator(2024), 
+                                MinValueValidator(2015)
+                               ])
 
     def __str__(self):
         return self.name
